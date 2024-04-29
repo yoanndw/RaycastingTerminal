@@ -29,12 +29,13 @@ namespace Raycasting
 
         public static Ray Raycast(int[,] map, Player player, float angle, float distance, float distanceIncrement)
         {
-            float angleRad = angle * MathF.PI / 180;
+            float playerAngleRad = player.Angle * MathF.PI / 180;
+            float angleRad = playerAngleRad + angle * MathF.PI / 180;
 
             Vector2 playerScrPos = player.ScreenPos;
             Vector2 distanceVec = distance * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
-            Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, player.Angle);
+            Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, angle);
             Debug.WriteLine(ray);
 
             while (!ray.Hit(map))
@@ -52,6 +53,15 @@ namespace Raycasting
             int tileX = MapUtils.PixelToTile(this.Dest.X);
             int tileY = MapUtils.PixelToTile(this.Dest.Y);
             return map[tileY, tileX] == 1;
+        }
+
+        public int Project()
+        {
+            float angleRad = this.AngleFromPlayerDeg * MathF.PI / 180;
+            float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV);
+            float projectionDest = distanceFromProjScr * MathF.Tan(angleRad);
+
+            return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.PROJ_SCREEN_WIDTH);
         }
 
         public void Draw(int offX, int offY)
