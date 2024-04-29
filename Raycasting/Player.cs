@@ -10,18 +10,18 @@ namespace Raycasting
     public class Player
     {
         int x, y;
-        float angle;
+        public float Angle { get; private set; }
 
         public Player(int x, int y, float angle)
         {
             this.x = x;
             this.y = y;
-            this.angle = angle;
+            this.Angle = angle;
         }
 
         public Vector2 ScreenPos
         {
-            get => new Vector2(MapUtils.TileToPixel(x), MapUtils.TileToPixel(y)) + new Vector2(MapUtils.TILE_SIZE) / 2;
+            get => new Vector2(MapUtils.TileToPixel(x), MapUtils.TileToPixel(y)) + new Vector2(Constants.TILE_SIZE) / 2;
         }
     }
 }

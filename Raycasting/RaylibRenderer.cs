@@ -37,11 +37,13 @@ namespace Raycasting.Rendering
 
                 Raylib.DrawRectangle(800, 0, 200, 600, Color.White);
 
-                Vector2 ray = ShootOneRay(45, 5);
+                Ray ray = Ray.Raycast(this.map, this.player, -Constants.HALF_FOV, 5, 1);
+                var ray2 = Ray.Raycast(this.map, this.player, Constants.HALF_FOV, 5, 1);
 
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
-                DrawRay(ray, 800, 0);
+                ray.Draw(800, 0);
+                ray2.Draw(800, 0);
 
                 Raylib.EndDrawing();
             }
@@ -59,7 +61,8 @@ namespace Raycasting.Rendering
                     int tile = map[i, j];
                     if (tile == 1)
                     {
-                        Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * this.tileSize, this.tileSizeVec), 0, 0, 2, Color.Black);
+                        Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * this.tileSize, this.tileSizeVec), 0, 0, 1, Color.Black);
+                        //Raylib.DrawRectangle(offX + j * this.tileSize, offY + i * this.tileSize, this.tileSize, this.tileSize, Color.Blue);
                     }
                 }
             }
@@ -80,7 +83,7 @@ namespace Raycasting.Rendering
             Debug.WriteLine("Origin: " + offset);
         }
 
-        Vector2 ShootOneRay(float angle, float distance)
+        Vector2 CastOneRay(float angle, float distance, float distanceIncrement)
         {
             float angleRad = angle * MathF.PI / 180;
 
@@ -89,7 +92,29 @@ namespace Raycasting.Rendering
             Vector2 ray = playerScrPos + distanceVec;
             Debug.WriteLine(ray);
 
+            while (!RayHit(ray)) // Not hit
+            {
+                distanceVec += distanceIncrement * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+                ray = playerScrPos + distanceVec;
+            }
+
             return ray;
+        }
+
+        bool RayHit(Vector2 ray)
+        {
+            int tileX = MapUtils.PixelToTile(ray.X);
+            int tileY = MapUtils.PixelToTile(ray.Y);
+            return this.map[tileY, tileX] == 1;
+        }
+
+        int ProjectRay(Vector2 ray, float angle)
+        {
+            float angleRad = angle * MathF.PI / 180;
+            float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Atan(Constants.HALF_FOV);
+            float projectionDest = distanceFromProjScr * MathF.Cos(angleRad);
+
+            return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2)) * Constants.PROJ_SCREEN_WIDTH;
         }
     }
 }

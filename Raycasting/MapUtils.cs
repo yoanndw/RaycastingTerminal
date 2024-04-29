@@ -8,10 +8,14 @@ namespace Raycasting
 {
     public static class MapUtils
     {
-        public static int TILE_SIZE = 20;
         public static int TileToPixel(int v)
         {
-            return v * TILE_SIZE;
+            return v * Constants.TILE_SIZE;
+        }
+
+        public static int PixelToTile(float v)
+        {
+            return (int)MathF.Floor(v / Constants.TILE_SIZE);
         }
     }
 }

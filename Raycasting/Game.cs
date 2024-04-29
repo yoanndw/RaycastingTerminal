@@ -12,7 +12,7 @@ namespace Raycasting
 
     public class Game
     {
-        Player player = new Player(1, 1, 45);
+        Player player = new Player(5, 2, 45);
 
         int[,] map =
         {
