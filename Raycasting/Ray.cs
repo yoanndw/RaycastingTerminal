@@ -55,13 +55,13 @@ namespace Raycasting
             return map[tileY, tileX] == 1;
         }
 
-        public int Project()
+        public int ProjectX()
         {
             float angleRad = this.AngleFromPlayerDeg * MathF.PI / 180;
-            float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV);
+            float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
             float projectionDest = distanceFromProjScr * MathF.Tan(angleRad);
 
-            return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.PROJ_SCREEN_WIDTH);
+            return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.RESOLUTION_WIDTH) + Constants.RESOLUTION_WIDTH;
         }
 
         public void Draw(int offX, int offY)

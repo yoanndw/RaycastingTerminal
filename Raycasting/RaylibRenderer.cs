@@ -39,11 +39,11 @@ namespace Raycasting.Rendering
 
                 //Ray ray = Ray.Raycast(this.map, this.player, -Constants.HALF_FOV, 5, 1);
                 //var ray2 = Ray.Raycast(this.map, this.player, Constants.HALF_FOV, 5, 1);
-                var ray3 = Ray.Raycast(this.map, this.player, 20, 5, 1);
+                var ray3 = Ray.Raycast(this.map, this.player, 35, 5, 1);
 
                 //Debug.WriteLine("Ray: " + ray.Project());
                 //Debug.WriteLine("Ray 2: " + ray2.Project());
-                Debug.WriteLine("Ray 3: " + ray3.Project());
+                Debug.WriteLine("Ray 3: " + ray3.ProjectX());
 
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
