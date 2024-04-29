@@ -1,15 +1,18 @@
 ﻿using Raylib_cs;
 
-Raylib.InitWindow(800, 600, "Raycasting");
-while (!Raylib.WindowShouldClose())
+using Raycasting;
+
+public class Program
 {
-    Raylib.BeginDrawing();
-    Raylib.ClearBackground(Color.White);
+    static int playerX = 400, playerY = 300;
+    public static void Main(string[] args)
+    {
+        Game game = new Game();
+        game.Run();
+    }
 
-    Raylib.DrawText("Texte", 200, 200, 30, Color.Black);
-    Raylib.DrawLine(100, 100, 200, 200, Color.Red);
-
-    Raylib.EndDrawing();
+    static void DrawPlayer()
+    {
+        Raylib.DrawCircle(playerX, playerY, 10, Color.Green);
+    }
 }
-
-Raylib.CloseWindow();
