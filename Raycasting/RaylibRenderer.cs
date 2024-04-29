@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -36,8 +37,11 @@ namespace Raycasting.Rendering
 
                 Raylib.DrawRectangle(800, 0, 200, 600, Color.White);
 
+                Vector2 ray = ShootOneRay(45, 5);
+
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
+                DrawRay(ray, 800, 0);
 
                 Raylib.EndDrawing();
             }
@@ -64,9 +68,28 @@ namespace Raycasting.Rendering
         void DrawPlayer(int offX, int offY)
         {
             Vector2 playerScrPos = this.player.ScreenPos;
-            int playerScrX = offX + (int)playerScrPos.X + this.tileSize / 2;
-            int playerScrY = offY + (int)playerScrPos.Y + this.tileSize / 2;
+            int playerScrX = offX + (int)playerScrPos.X;
+            int playerScrY = offY + (int)playerScrPos.Y;
             Raylib.DrawCircle(playerScrX, playerScrY, this.playerRadius, Color.Green);
+        }
+
+        void DrawRay(Vector2 ray, int offX, int offY)
+        {
+            Vector2 offset = new Vector2(offX, offY);
+            Raylib.DrawLineV(offset + this.player.ScreenPos, offset + ray, Color.Red);
+            Debug.WriteLine("Origin: " + offset);
+        }
+
+        Vector2 ShootOneRay(float angle, float distance)
+        {
+            float angleRad = angle * MathF.PI / 180;
+
+            Vector2 playerScrPos = this.player.ScreenPos;
+            Vector2 distanceVec = distance * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+            Vector2 ray = playerScrPos + distanceVec;
+            Debug.WriteLine(ray);
+
+            return ray;
         }
     }
 }

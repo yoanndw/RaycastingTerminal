@@ -8,9 +8,10 @@ namespace Raycasting
 {
     public static class MapUtils
     {
+        public static int TILE_SIZE = 20;
         public static int TileToPixel(int v)
         {
-            return v * 20;
+            return v * TILE_SIZE;
         }
     }
 }
