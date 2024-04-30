@@ -23,5 +23,11 @@ namespace Raycasting
         {
             get => new Vector2(MapUtils.TileToPixel(x), MapUtils.TileToPixel(y)) + new Vector2(Constants.TILE_SIZE) / 2;
         }
+
+        public void MoveNoCheck(int dx, int dy)
+        {
+            this.x += dx;
+            this.y += dy;
+        }
     }
 }

@@ -32,6 +32,22 @@ namespace Raycasting.Rendering
             Raylib.InitWindow(1200, 600, "Raycasting");
             while (!Raylib.WindowShouldClose())
             {
+                if (Raylib.IsKeyPressed(KeyboardKey.Right))
+                {
+                    this.player.MoveNoCheck(1, 0);
+                }
+                else if (Raylib.IsKeyPressed(KeyboardKey.Left))
+                {
+                    this.player.MoveNoCheck(-1, 0);
+                } else if (Raylib.IsKeyPressed(KeyboardKey.Up))
+                {
+                    this.player.MoveNoCheck(0, -1);
+                } else if (Raylib.IsKeyPressed(KeyboardKey.Down))
+                {
+                    this.player.MoveNoCheck(0, 1);
+                }
+
+
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.Black);
 
@@ -49,14 +65,25 @@ namespace Raycasting.Rendering
                     var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
                     r.Draw(800, 0, c);
                     nRays++;
+                    Render3D(r, i);
                 }
-                Debug.WriteLine("N Rays: " + nRays);
 
 
                 Raylib.EndDrawing();
             }
 
             Raylib.CloseWindow();
+        }
+
+        void Render3D(Ray ray, int projScrX)
+        {
+            if (ray.Distance <= Constants.FAR_PLANE_DIST)
+            {
+                int pixelSize = 800 / Constants.RESOLUTION_WIDTH;
+                int x = projScrX * pixelSize;
+                int y = 300 - pixelSize / 2;
+                Raylib.DrawRectangle(x, y, pixelSize, pixelSize, Color.Green);
+            }
         }
 
         void DrawMap(int offX, int offY)
@@ -70,7 +97,6 @@ namespace Raycasting.Rendering
                     if (tile == 1)
                     {
                         Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * this.tileSize, this.tileSizeVec), 0, 0, 1, Color.Black);
-                        //Raylib.DrawRectangle(offX + j * this.tileSize, offY + i * this.tileSize, this.tileSize, this.tileSize, Color.Blue);
                     }
                 }
             }

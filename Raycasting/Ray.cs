@@ -38,7 +38,6 @@ namespace Raycasting
             Vector2 distanceVec =  initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
             Ray ray = new Ray(playerScrPos, rayVec, player.Angle, 0);
-            Debug.WriteLine(ray);
             ray.Draw(800, 0);
 
             while (!ray.Hit(map))
@@ -51,14 +50,6 @@ namespace Raycasting
             return ray;
         }
 
-        //public static float ProjectRay(int[,] map, Player player, int projScrX)
-        //{
-        //    float playerScrDistance = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
-        //    float angleRad = MathF.Atan(projScrX / playerScrDistance);
-        //    Ray ray = Raycast(map, player, angleRad, 5, 1);
-        //    return ray.Distance;
-        //}
-
         bool Hit(int[,] map)
         {
             int tileX = MapUtils.PixelToTile(this.Dest.X);
@@ -66,20 +57,10 @@ namespace Raycasting
             return map[tileY, tileX] == 1;
         }
 
-        //public int ProjectX()
-        //{
-        //    float angleRad = this.AngleFromPlayerDeg * MathF.PI / 180;
-        //    float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
-        //    float projectionDest = distanceFromProjScr * MathF.Tan(angleRad);
-
-        //    return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.RESOLUTION_WIDTH) + Constants.RESOLUTION_WIDTH;
-        //}
-
         public void Draw(int offX, int offY, Color color)
         {
             Vector2 offset = new Vector2(offX, offY);
             Raylib.DrawLineV(offset + this.Origin, offset + this.Dest, color);
-            Debug.WriteLine("Origin: " + offset + " Dist : " + this.Distance);
         }
 
         public void Draw(int offX, int offY)
