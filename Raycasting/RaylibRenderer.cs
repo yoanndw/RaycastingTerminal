@@ -16,7 +16,7 @@ namespace Raycasting.Rendering
         int playerRadius = 7;
 
         int[,] map;
-        int tileSize = 20;
+        int tileSize = Constants.TILE_SIZE;
         Vector2 tileSizeVec;
 
         public RaylibRenderer(int[,] map, Player player)
@@ -29,27 +29,33 @@ namespace Raycasting.Rendering
 
         public override void Draw()
         {
-            Raylib.InitWindow(1000, 600, "Raycasting");
+            Raylib.InitWindow(1200, 600, "Raycasting");
             while (!Raylib.WindowShouldClose())
             {
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.Black);
 
-                Raylib.DrawRectangle(800, 0, 200, 600, Color.White);
+                Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
 
-                //Ray ray = Ray.Raycast(this.map, this.player, -Constants.HALF_FOV, 5, 1);
-                //var ray2 = Ray.Raycast(this.map, this.player, Constants.HALF_FOV, 5, 1);
-                var ray3 = Ray.Raycast(this.map, this.player, 35, 5, 1);
+                //for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
+                //{
+                //    int projScrX = i - Constants.RESOLUTION_WIDTH / 2;
+                //    float dist = Ray.ProjectRay(this.map, this.player, projScrX);
+                //    if (dist <= Constants.MAX_VIEW_DISTANCE)
+                //    {
+                //        int squareSize = 800 / Constants.RESOLUTION_WIDTH;
+                //        Raylib.DrawRectangle(i * squareSize, 300 - squareSize / 2, squareSize, squareSize, Color.Orange);
+                //    }
+                //}
 
-                //Debug.WriteLine("Ray: " + ray.Project());
-                //Debug.WriteLine("Ray 2: " + ray2.Project());
-                Debug.WriteLine("Ray 3: " + ray3.ProjectX());
+                //var ray = Ray.ProjectRay(this.map, this.player, -20);
+                var ray = Ray.Raycast(this.map, this.player, -35, 1);
+                //var ray2 = Ray.Raycast(this.map, this.player, 35, 1);
 
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
-                //ray.Draw(800, 0);
+                ray.Draw(800, 0);
                 //ray2.Draw(800, 0);
-                ray3.Draw(800, 0);
 
                 Raylib.EndDrawing();
             }
@@ -80,13 +86,6 @@ namespace Raycasting.Rendering
             int playerScrX = offX + (int)playerScrPos.X;
             int playerScrY = offY + (int)playerScrPos.Y;
             Raylib.DrawCircle(playerScrX, playerScrY, this.playerRadius, Color.Green);
-        }
-
-        void DrawRay(Vector2 ray, int offX, int offY)
-        {
-            Vector2 offset = new Vector2(offX, offY);
-            Raylib.DrawLineV(offset + this.player.ScreenPos, offset + ray, Color.Red);
-            //Debug.WriteLine("Origin: " + offset);
         }
     }
 }

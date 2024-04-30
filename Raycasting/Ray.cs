@@ -27,16 +27,19 @@ namespace Raycasting
             this.Distance = Vector2.Distance(origin, dest);
         }
 
-        public static Ray Raycast(int[,] map, Player player, float angle, float distance, float distanceIncrement)
+        public static Ray Raycast(int[,] map, Player player, float angle, float distanceIncrement)
         {
             float playerAngleRad = player.Angle * MathF.PI / 180;
+
             float angleRad = playerAngleRad + angle * MathF.PI / 180;
 
             Vector2 playerScrPos = player.ScreenPos;
-            Vector2 distanceVec = distance * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+            float initialDistance = Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
+            Vector2 distanceVec =  initialDistance * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
-            Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, angle);
+            Ray ray = new Ray(playerScrPos, rayVec, player.Angle, 0);
             Debug.WriteLine(ray);
+            ray.Draw(800, 0);
 
             while (!ray.Hit(map))
             {
@@ -48,6 +51,14 @@ namespace Raycasting
             return ray;
         }
 
+        //public static float ProjectRay(int[,] map, Player player, int projScrX)
+        //{
+        //    float playerScrDistance = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
+        //    float angleRad = MathF.Atan(projScrX / playerScrDistance);
+        //    Ray ray = Raycast(map, player, angleRad, 5, 1);
+        //    return ray.Distance;
+        //}
+
         bool Hit(int[,] map)
         {
             int tileX = MapUtils.PixelToTile(this.Dest.X);
@@ -55,14 +66,14 @@ namespace Raycasting
             return map[tileY, tileX] == 1;
         }
 
-        public int ProjectX()
-        {
-            float angleRad = this.AngleFromPlayerDeg * MathF.PI / 180;
-            float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
-            float projectionDest = distanceFromProjScr * MathF.Tan(angleRad);
+        //public int ProjectX()
+        //{
+        //    float angleRad = this.AngleFromPlayerDeg * MathF.PI / 180;
+        //    float distanceFromProjScr = (Constants.PROJ_PLANE_WIDTH / 2) / MathF.Tan(Constants.HALF_FOV_RAD);
+        //    float projectionDest = distanceFromProjScr * MathF.Tan(angleRad);
 
-            return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.RESOLUTION_WIDTH) + Constants.RESOLUTION_WIDTH;
-        }
+        //    return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.RESOLUTION_WIDTH) + Constants.RESOLUTION_WIDTH;
+        //}
 
         public void Draw(int offX, int offY)
         {
