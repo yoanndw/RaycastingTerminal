@@ -37,25 +37,21 @@ namespace Raycasting.Rendering
 
                 Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
 
-                //for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
-                //{
-                //    int projScrX = i - Constants.RESOLUTION_WIDTH / 2;
-                //    float dist = Ray.ProjectRay(this.map, this.player, projScrX);
-                //    if (dist <= Constants.MAX_VIEW_DISTANCE)
-                //    {
-                //        int squareSize = 800 / Constants.RESOLUTION_WIDTH;
-                //        Raylib.DrawRectangle(i * squareSize, 300 - squareSize / 2, squareSize, squareSize, Color.Orange);
-                //    }
-                //}
-
-                //var ray = Ray.ProjectRay(this.map, this.player, -20);
-                var ray = Ray.Raycast(this.map, this.player, -35, 1);
-                //var ray2 = Ray.Raycast(this.map, this.player, 35, 1);
-
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
-                ray.Draw(800, 0);
-                //ray2.Draw(800, 0);
+
+                int nRays = 0;
+                for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
+                {
+                    var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
+
+                    Ray r = Ray.Raycast(this.map, this.player, a, 1);
+                    var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
+                    r.Draw(800, 0, c);
+                    nRays++;
+                }
+                Debug.WriteLine("N Rays: " + nRays);
+
 
                 Raylib.EndDrawing();
             }

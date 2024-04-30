@@ -27,15 +27,15 @@ namespace Raycasting
             this.Distance = Vector2.Distance(origin, dest);
         }
 
-        public static Ray Raycast(int[,] map, Player player, float angle, float distanceIncrement)
+        public static Ray Raycast(int[,] map, Player player, double angle, float distanceIncrement)
         {
-            float playerAngleRad = player.Angle * MathF.PI / 180;
+            var playerAngleRad = player.Angle * Math.PI / 180;
 
-            float angleRad = playerAngleRad + angle * MathF.PI / 180;
+            var angleRad = playerAngleRad + angle * Math.PI / 180;
 
             Vector2 playerScrPos = player.ScreenPos;
-            float initialDistance = Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
-            Vector2 distanceVec =  initialDistance * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+            var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
+            Vector2 distanceVec =  initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
             Ray ray = new Ray(playerScrPos, rayVec, player.Angle, 0);
             Debug.WriteLine(ray);
@@ -43,7 +43,7 @@ namespace Raycasting
 
             while (!ray.Hit(map))
             {
-                distanceVec += distanceIncrement * new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+                distanceVec += distanceIncrement * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
                 ray.Dest = playerScrPos + distanceVec;
                 ray.Distance += distanceIncrement;
             }
@@ -75,11 +75,16 @@ namespace Raycasting
         //    return (int)(projectionDest / (Constants.PROJ_PLANE_WIDTH / 2) * Constants.RESOLUTION_WIDTH) + Constants.RESOLUTION_WIDTH;
         //}
 
-        public void Draw(int offX, int offY)
+        public void Draw(int offX, int offY, Color color)
         {
             Vector2 offset = new Vector2(offX, offY);
-            Raylib.DrawLineV(offset + this.Origin, offset + this.Dest, Color.Red);
+            Raylib.DrawLineV(offset + this.Origin, offset + this.Dest, color);
             Debug.WriteLine("Origin: " + offset + " Dist : " + this.Distance);
+        }
+
+        public void Draw(int offX, int offY)
+        {
+            this.Draw(offX, offY, Color.Green);
         }
     }
 }
