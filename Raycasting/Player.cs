@@ -29,5 +29,18 @@ namespace Raycasting
             this.x += dx;
             this.y += dy;
         }
+
+        public void Rotate(float angleDeg)
+        {
+            this.Angle += angleDeg;
+            if (this.Angle > 360)
+            {
+                this.Angle -= 360;
+            }
+            else if (this.Angle < -360)
+            {
+                this.Angle += 360;
+            }
+        }
     }
 }

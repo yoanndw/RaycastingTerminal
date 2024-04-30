@@ -46,6 +46,14 @@ namespace Raycasting.Rendering
                 {
                     this.player.MoveNoCheck(0, 1);
                 }
+                else if (Raylib.IsKeyPressed(KeyboardKey.J))
+                {
+                    this.player.Rotate(-15);
+                }
+                else if (Raylib.IsKeyPressed(KeyboardKey.L))
+                {
+                    this.player.Rotate(15);
+                }
 
 
                 Raylib.BeginDrawing();
