@@ -53,10 +53,13 @@ namespace Raycasting.Rendering
 
                 Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
 
+                // Sky and ground
+                Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
+                Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
+
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
 
-                int nRays = 0;
                 for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
                 {
                     var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
@@ -64,7 +67,6 @@ namespace Raycasting.Rendering
                     Ray r = Ray.Raycast(this.map, this.player, a, 1);
                     var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
                     r.Draw(800, 0, c);
-                    nRays++;
                     Render3D(r, i);
                 }
 
@@ -81,8 +83,12 @@ namespace Raycasting.Rendering
             {
                 int pixelSize = 800 / Constants.RESOLUTION_WIDTH;
                 int x = projScrX * pixelSize;
-                int y = 300 - pixelSize / 2;
-                Raylib.DrawRectangle(x, y, pixelSize, pixelSize, Color.Green);
+
+                // Compute height
+                double height = Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
+                int renderedHeight = (int)height * pixelSize;
+                int y = 300 - renderedHeight/ 2;
+                Raylib.DrawRectangle(x, y, pixelSize, renderedHeight, Color.Green);
             }
         }
 
