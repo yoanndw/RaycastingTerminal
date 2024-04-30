@@ -27,7 +27,7 @@ namespace Raycasting
             this.Distance = Vector2.Distance(origin, dest);
         }
 
-        public static Ray Raycast(int[,] map, Player player, double angle, float distanceIncrement)
+        public static Ray Raycast(int[,] map, Player player, float angle, float distanceIncrement)
         {
             var playerAngleRad = player.Angle * Math.PI / 180;
 
@@ -37,7 +37,7 @@ namespace Raycasting
             var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
             Vector2 distanceVec =  initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
-            Ray ray = new Ray(playerScrPos, rayVec, player.Angle, 0);
+            Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, angle);
             ray.Draw(800, 0);
 
             while (!ray.Hit(map))
@@ -47,7 +47,14 @@ namespace Raycasting
                 ray.Distance += distanceIncrement;
             }
 
+            ray.CorrectDistortion();
+
             return ray;
+        }
+
+        void CorrectDistortion()
+        {
+            this.Distance *= MathF.Cos(this.AngleFromPlayerDeg / 180 * MathF.PI);
         }
 
         bool Hit(int[,] map)
