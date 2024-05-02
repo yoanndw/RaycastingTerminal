@@ -95,7 +95,7 @@ namespace Raycasting
                 if (sin < 0)
                 {
                     deltaTileY = MapUtils.GetPreviousTileDelta(origin.Y);
-                    referenceAngle = MathF.PI - angleRad;
+                    referenceAngle = MathF.PI + angleRad;
                 }
                 else if (sin > 0)
                 {
@@ -180,7 +180,7 @@ namespace Raycasting
                 return MapUtils.GetTile(map, tileX - 1, tileY) == 1
                     || MapUtils.GetTile(map, tileX, tileY) == 1
                     || MapUtils.GetTile(map, tileX, tileY - 1) == 1
-                    || MapUtils.GetTile(map, tileX, tileY) == 1;
+                    || MapUtils.GetTile(map, tileX - 1, tileY - 1) == 1;
             }
 
             if (this.Dest.X % Constants.TILE_SIZE == 0)
