@@ -69,12 +69,13 @@ namespace Raycasting
             Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, angle);
 
             Vector2 newDest = ray.Origin;
-            while (!ray.Hit(map))
+            do
             {
                 newDest = ray.ComputeExtension(newDest);
                 Debug.WriteLine($"New dest: {newDest}");
                 ray.UpdateDest(newDest);
             }
+            while (!ray.Hit(map));
 
             ray.CorrectDistortion();
 
