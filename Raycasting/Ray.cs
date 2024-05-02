@@ -8,8 +8,11 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Raycasting.MathUtils;
+
 namespace Raycasting
 {
+
     internal class Ray
     {
         public Vector2 Origin { get; private set; }
@@ -29,9 +32,9 @@ namespace Raycasting
 
         public static Ray Raycast(int[,] map, Player player, float angle, float distanceIncrement)
         {
-            var playerAngleRad = player.Angle * Math.PI / 180;
+            var playerAngleRad = Deg2Rad(player.Angle);
 
-            var angleRad = playerAngleRad + angle * Math.PI / 180;
+            var angleRad = playerAngleRad + Deg2Rad(angle);
 
             Vector2 playerScrPos = player.ScreenPos;
             var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
@@ -54,7 +57,7 @@ namespace Raycasting
 
         void CorrectDistortion()
         {
-            this.Distance *= MathF.Cos(this.AngleFromPlayerDeg / 180 * MathF.PI);
+            this.Distance *= MathF.Cos(Deg2Rad(this.AngleFromPlayerDeg));
         }
 
         bool Hit(int[,] map)

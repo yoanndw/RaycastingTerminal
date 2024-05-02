@@ -1,4 +1,6 @@
-﻿namespace Raycasting
+﻿using static Raycasting.MathUtils;
+
+namespace Raycasting
 {
     internal class Constants
     {
@@ -6,7 +8,7 @@
         public static int RESOLUTION_WIDTH = 100;
         public static int RESOLUTION_HEIGHT = 100;
         public static int FOV_DEG = 70;
-        public static double FOV_RAD = FOV_DEG * Math.PI / 180;
+        public static double FOV_RAD = Deg2Rad(FOV_DEG);
         public static int HALF_FOV_DEG = FOV_DEG / 2;
         public static double HALF_FOV_RAD = FOV_RAD / 2f;
         public static double NEAR_PLANE_DIST = TILE_SIZE / 2f;
