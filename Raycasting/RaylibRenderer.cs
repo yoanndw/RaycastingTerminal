@@ -71,8 +71,9 @@ namespace Raycasting.Rendering
                 for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
                 {
                     var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
+                    Debug.WriteLine($"--------{a}°----------");
 
-                    Ray r = Ray.Raycast(this.map, this.player, (float)a, 1);
+                    Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
                     var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
                     r.Draw(800, 0, c);
                     Render3D(r, i);
