@@ -14,20 +14,20 @@ namespace Raycasting
 
         public Player(int x, int y, float angle)
         {
-            this.x = x;
-            this.y = y;
+            this.x = MapUtils.TileToPixel(x);
+            this.y = MapUtils.TileToPixel(y);
             this.Angle = angle;
         }
 
         public Vector2 ScreenPos
         {
-            get => new Vector2(MapUtils.TileToPixel(x), MapUtils.TileToPixel(y)) + new Vector2(Constants.TILE_SIZE) / 2;
+            get => new Vector2(x, y);
         }
 
         public void MoveNoCheck(int dx, int dy)
         {
-            this.x += dx;
-            this.y += dy;
+            this.x += dx * Constants.TILE_SIZE;
+            this.y += dy * Constants.TILE_SIZE;
         }
 
         public void Rotate(float angleDeg)

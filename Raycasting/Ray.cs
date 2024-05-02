@@ -78,6 +78,7 @@ namespace Raycasting
             while (!ray.Hit(map));
 
             ray.CorrectDistortion();
+            ray.RoundDistance();
 
             return ray;
         }
@@ -170,6 +171,11 @@ namespace Raycasting
         void CorrectDistortion()
         {
             this.Distance *= MathF.Cos(Deg2Rad(this.AngleFromPlayerDeg));
+        }
+
+        void RoundDistance()
+        {
+            this.Distance = MathF.Round(this.Distance);
         }
 
         bool Hit(int[,] map)
