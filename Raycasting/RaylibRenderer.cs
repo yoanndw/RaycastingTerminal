@@ -12,86 +12,59 @@ namespace Raycasting.Rendering
 {
     public class RaylibRenderer : BaseRenderer
     {
-        Image wallImage;
-
-        Player player;
-        int playerRadius = 7;
-
         int[,] map;
-        int tileSize = Constants.TILE_SIZE;
-        Vector2 tileSizeVec;
+        Player player;
+        int playerRadius;
 
-        public RaylibRenderer(int[,] map, Player player)
+        public RaylibRenderer(int[,] map, Image wallImage, Player player, int playerRadius) : base(wallImage)
         {
-            this.player = player;
             this.map = map;
-
-            this.tileSizeVec = new Vector2(this.tileSize, this.tileSize);
+            this.player = player;
+            this.playerRadius = playerRadius;
         }
 
-        void LoadAssets()
+
+        public override void InitFrame()
         {
-            this.wallImage = Raylib.LoadImage("Images/wall16.png");
+            Raylib.InitWindow(1200, 600, "Raycasting");
+        }
+
+        public override bool IsRunning()
+        {
+            return !Raylib.WindowShouldClose();
+        }
+
+        public override void CloseFrame()
+        {
+            Raylib.CloseWindow();
         }
 
         public override void Draw()
         {
-            Raylib.InitWindow(1200, 600, "Raycasting");
-            LoadAssets();
-            while (!Raylib.WindowShouldClose())
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.Black);
+
+            Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
+
+            // Sky and ground
+            Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
+            Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
+
+            DrawPlayer(800, 0);
+            DrawMap(800, 0);
+
+            for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
             {
-                if (Raylib.IsKeyPressed(KeyboardKey.Right))
-                {
-                    this.player.MoveNoCheck(1, 0);
-                }
-                else if (Raylib.IsKeyPressed(KeyboardKey.Left))
-                {
-                    this.player.MoveNoCheck(-1, 0);
-                } else if (Raylib.IsKeyPressed(KeyboardKey.Up))
-                {
-                    this.player.MoveNoCheck(0, -1);
-                } else if (Raylib.IsKeyPressed(KeyboardKey.Down))
-                {
-                    this.player.MoveNoCheck(0, 1);
-                }
-                else if (Raylib.IsKeyPressed(KeyboardKey.J))
-                {
-                    this.player.Rotate(-15);
-                }
-                else if (Raylib.IsKeyPressed(KeyboardKey.L))
-                {
-                    this.player.Rotate(15);
-                }
+                var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
+                Debug.WriteLine($"--------{a}°----------");
 
-
-                Raylib.BeginDrawing();
-                Raylib.ClearBackground(Color.Black);
-
-                Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
-
-                // Sky and ground
-                Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
-                Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
-                
-                DrawPlayer(800, 0);
-                DrawMap(800, 0);
-
-                for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
-                {
-                    var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-                    Debug.WriteLine($"--------{a}°----------");
-
-                    Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
-                    var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
-                    r.Draw(800, 0, c);
-                    Render3D(r, i);
-                }
-
-
-                Raylib.EndDrawing();
+                Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
+                var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
+                r.Draw(800, 0, c);
+                Render3D(r, i);
             }
 
-            Raylib.CloseWindow();
+            Raylib.EndDrawing();
         }
 
         void Render3D(Ray ray, int nearPlaneX)
@@ -128,7 +101,7 @@ namespace Raycasting.Rendering
                     int tile = map[i, j];
                     if (tile == 1)
                     {
-                        Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * this.tileSize, this.tileSizeVec), 0, 0, 1, Color.Black);
+                        Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * Constants.TILE_SIZE, Constants.TILE_SIZE_VEC), 0, 0, 1, Color.Black);
                     }
                 }
             }
