@@ -293,6 +293,27 @@ namespace Raycasting
             return 0;
         }
 
+        public int HitTextureX(Image image)
+        {
+            float destPosition;
+            if (this.Dest.X % Constants.TILE_SIZE == 0)
+            {
+                destPosition = this.Dest.Y;
+            }
+            else
+            {
+                destPosition = this.Dest.X;
+            }
+
+            float positionOnTile = destPosition - MapUtils.TileToPixel(MapUtils.PixelToTile(destPosition));
+            return (int)Math.Floor(positionOnTile / Constants.TILE_SIZE * image.Width);
+        }
+
+        public int HitTextureY(Image image, double height, double projScrY)
+        {
+            return (int)Math.Floor(projScrY / height * image.Height);
+        }
+
         public void Draw(int offX, int offY, Color color)
         {
             Vector2 offset = new Vector2(offX, offY);

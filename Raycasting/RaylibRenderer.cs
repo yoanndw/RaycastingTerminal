@@ -12,6 +12,8 @@ namespace Raycasting.Rendering
 {
     public class RaylibRenderer : BaseRenderer
     {
+        Image wallImage;
+
         Player player;
         int playerRadius = 7;
 
@@ -27,9 +29,16 @@ namespace Raycasting.Rendering
             this.tileSizeVec = new Vector2(this.tileSize, this.tileSize);
         }
 
+        void LoadAssets()
+        {
+            this.wallImage = Raylib.LoadImage("Images/brick8.png");
+
+        }
+
         public override void Draw()
         {
             Raylib.InitWindow(1200, 600, "Raycasting");
+            LoadAssets();
             while (!Raylib.WindowShouldClose())
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
@@ -64,7 +73,7 @@ namespace Raycasting.Rendering
                 // Sky and ground
                 Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
                 Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
-
+                
                 DrawPlayer(800, 0);
                 DrawMap(800, 0);
 
@@ -86,25 +95,27 @@ namespace Raycasting.Rendering
             Raylib.CloseWindow();
         }
 
-        void Render3D(Ray ray, int projScrX)
+        void Render3D(Ray ray, int nearPlaneX)
         {
             if (ray.Distance <= Constants.FAR_PLANE_DIST)
             {
-                int pixelSize = 800 / Constants.RESOLUTION_WIDTH;
-                int x = projScrX * pixelSize;
-
-                // Compute height
-                double height = Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
-                int renderedHeight = (int)Math.Round(height) * pixelSize;
-                int y = 300 - renderedHeight/ 2;
+                int pixelWidth = 800 / Constants.RESOLUTION_WIDTH;
+                int pixelHeight = 600 / Constants.RESOLUTION_HEIGHT;
+                int posScrX = nearPlaneX * pixelWidth;
 
                 // Color
-                int block = ray.BlockHit(this.map);
-                if (block > 0)
+                int posTexX = ray.HitTextureX(this.wallImage);
+
+                double height = Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
+                for (int y = 0; y < height; y++)
                 {
-                    Color c = Constants.COLORS[block];
-                    Raylib.DrawRectangle(x, y, pixelSize, renderedHeight, c);
+                    int posTexY = ray.HitTextureY(this.wallImage, height, y);
+
+                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight) + 300;
+                    Color color = Raylib.GetImageColor(this.wallImage, posTexX, posTexY);
+                    Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
                 }
+
             }
         }
 
