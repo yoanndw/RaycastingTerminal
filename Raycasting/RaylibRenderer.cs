@@ -31,8 +31,7 @@ namespace Raycasting.Rendering
 
         void LoadAssets()
         {
-            this.wallImage = Raylib.LoadImage("Images/brick8.png");
-
+            this.wallImage = Raylib.LoadImage("Images/wall16.png");
         }
 
         public override void Draw()
