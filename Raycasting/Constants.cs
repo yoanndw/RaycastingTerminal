@@ -1,4 +1,6 @@
-﻿using static Raycasting.MathUtils;
+﻿using Raylib_cs;
+
+using static Raycasting.MathUtils;
 
 namespace Raycasting
 {
@@ -20,5 +22,21 @@ namespace Raycasting
 
         public static double STEP_ANGLE_RAD = FOV_RAD / RESOLUTION_WIDTH;
         public static double STEP_ANGLE_DEG = FOV_DEG / ((double)RESOLUTION_WIDTH);
+
+        #region Sides
+        public static int NORTH = 1;
+        public static int EAST = 2;
+        public static int SOUTH = 3;
+        public static int WEST = 4;
+
+        public static Color[] COLORS =
+        {
+            Color.SkyBlue,
+            Color.Blue,
+            Color.Yellow,
+            Color.Green,
+            Color.Red,
+        };
+        #endregion
     }
 }

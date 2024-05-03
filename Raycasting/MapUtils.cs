@@ -22,7 +22,7 @@ namespace Raycasting
         {
             if (y < 0 || y >= map.GetLength(0) || x < 0 || x >= map.GetLength(1))
             {
-                return 1;
+                return 0;
             }
 
             return map[y, x];

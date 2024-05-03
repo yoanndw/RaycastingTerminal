@@ -205,6 +205,94 @@ namespace Raycasting
             return MapUtils.GetTile(map, tileX, tileY) == 1;
         }
 
+        public int BlockHit(int[,] map)
+        {
+            if (this.Distance > Constants.FAR_PLANE_DIST)
+            {
+                return 0;
+            }
+
+            int tileX = MapUtils.PixelToTile(this.Dest.X);
+            int tileY = MapUtils.PixelToTile(this.Dest.Y);
+            if (this.Dest.X % Constants.TILE_SIZE == 0 && this.Dest.Y % Constants.TILE_SIZE == 0)
+            {
+                int northWest = MapUtils.GetTile(map, tileX - 1, tileY - 1);
+                int northEast = MapUtils.GetTile(map, tileX, tileY - 1);
+                int southWest = MapUtils.GetTile(map, tileX - 1, tileY);
+                int southEast = MapUtils.GetTile(map, tileX, tileY);
+
+                if (northWest > 0 && northEast > 0)
+                {
+                    return Constants.SOUTH;
+                }
+
+                if (northEast > 0 && southEast > 0)
+                {
+                    return Constants.WEST;
+                }
+
+                if (southWest > 0 && southEast > 0)
+                {
+                    return Constants.NORTH;
+                }
+
+                if (northWest > 0 && southWest > 0)
+                {
+                    return Constants.EAST;
+                }
+
+                if (northWest > 0)
+                {
+                    return Constants.SOUTH;
+                }
+
+                if (northEast > 0)
+                {
+                    return Constants.WEST;
+                }
+
+                if (southEast > 0)
+                {
+                    return Constants.NORTH;
+                }
+
+                if (southWest > 0)
+                {
+                    return Constants.EAST;
+                }
+            }
+            else if (this.Dest.X % Constants.TILE_SIZE == 0)
+            {
+                // Left is wall
+                if (MapUtils.GetTile(map, tileX - 1, tileY) != 0)
+                {
+                    return Constants.EAST;
+                }
+
+                // Right is wall
+                if (MapUtils.GetTile(map, tileX, tileY) != 0)
+                {
+                    return Constants.WEST;
+                }
+            }
+            else if (this.Dest.Y % Constants.TILE_SIZE == 0)
+            {
+                // Up is wall
+                if (MapUtils.GetTile(map, tileX, tileY - 1) != 0)
+                {
+                    return Constants.SOUTH;
+                }
+
+                // Down is wall
+                if (MapUtils.GetTile(map, tileX, tileY) != 0)
+                {
+                    return Constants.NORTH;
+                }
+            }
+
+            return 0;
+        }
+
         public void Draw(int offX, int offY, Color color)
         {
             Vector2 offset = new Vector2(offX, offY);

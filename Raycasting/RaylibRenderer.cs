@@ -97,7 +97,14 @@ namespace Raycasting.Rendering
                 double height = Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
                 int renderedHeight = (int)Math.Round(height) * pixelSize;
                 int y = 300 - renderedHeight/ 2;
-                Raylib.DrawRectangle(x, y, pixelSize, renderedHeight, Color.Green);
+
+                // Color
+                int block = ray.BlockHit(this.map);
+                if (block > 0)
+                {
+                    Color c = Constants.COLORS[block];
+                    Raylib.DrawRectangle(x, y, pixelSize, renderedHeight, c);
+                }
             }
         }
 
