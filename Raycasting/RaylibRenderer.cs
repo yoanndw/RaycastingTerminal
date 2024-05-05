@@ -53,11 +53,13 @@ namespace Raycasting.Rendering
             DrawPlayer(800, 0);
             DrawMap(800, 0);
 
+            Debug.WriteLine("----------------");
             for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
             {
                 var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-                Debug.WriteLine($"--------{a}°----------");
+                //Debug.WriteLine($"--------{a}°----------");
 
+                Debug.Write($"{a}° => ");
                 Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
                 var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
                 r.Draw(800, 0, c);
@@ -78,7 +80,7 @@ namespace Raycasting.Rendering
                 // Color
                 int posTexX = ray.HitTextureX(this.wallImage);
 
-                double height = Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
+                double height = 4 * Constants.TILE_SIZE * Constants.NEAR_PLANE_DIST / ray.Distance;
                 for (int y = 0; y < height; y++)
                 {
                     int posTexY = ray.HitTextureY(this.wallImage, height, y);

@@ -72,12 +72,14 @@ namespace Raycasting
             do
             {
                 newDest = ray.ComputeExtension(newDest);
-                Debug.WriteLine($"New dest: {newDest}");
+                //Debug.WriteLine($"New dest: {newDest}");
                 ray.UpdateDest(newDest);
             }
             while (!ray.Hit(map));
 
+            Debug.Write($" {ray.Dest} {ray.Distance}");
             ray.CorrectDistortion();
+            Debug.WriteLine($" | After: {ray.Dest} {ray.Distance}");
             ray.RoundDistance();
 
             return ray;
