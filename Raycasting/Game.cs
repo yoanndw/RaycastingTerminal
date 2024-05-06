@@ -14,7 +14,7 @@ namespace Raycasting
 
     public class Game
     {
-        Player player = new Player(2, 7, -30);
+        Player player = new Player(2, 7, -105);
         protected Image wallImage;
         int playerRadius = 7;
 

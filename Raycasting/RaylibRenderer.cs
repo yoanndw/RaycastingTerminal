@@ -69,13 +69,6 @@ namespace Raycasting.Rendering
             Raylib.EndDrawing();
         }
 
-        public override void RenderPixel(int posScrX, int posScrY, Color color)
-        {
-            int pixelWidth = 800 / Constants.RESOLUTION_WIDTH;
-            int pixelHeight = 600 / Constants.RESOLUTION_HEIGHT;
-            Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
-        }
-
         void Render3D(Ray ray, int nearPlaneX)
         {
             if (ray.Distance <= Constants.FAR_PLANE_DIST)
@@ -92,9 +85,9 @@ namespace Raycasting.Rendering
                 {
                     int posTexY = ray.HitTextureY(this.wallImage, height, y);
 
-                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight) + 300;
+                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight, 3) + 300;
                     Color color = Raylib.GetImageColor(this.wallImage, posTexX, posTexY);
-                    RenderPixel(posScrX, posScrY, color);
+                    Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
                 }
 
             }

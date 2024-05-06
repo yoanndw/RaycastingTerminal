@@ -32,6 +32,5 @@ namespace Raycasting.Rendering
         public abstract void CloseFrame();
         public abstract bool IsRunning();
         public abstract void Draw();
-        public abstract void RenderPixel(int posScrX, int posScrY, Color color);
     }
 }
