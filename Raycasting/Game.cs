@@ -14,7 +14,7 @@ namespace Raycasting
 
     public class Game
     {
-        Player player = new Player(2, 7, 7, 70, -105);
+        Player player = new Player(1, 1, 7, 90, -90);
         protected Image wallImage;
 
         int tileSize = Constants.TILE_SIZE;
@@ -54,23 +54,41 @@ namespace Raycasting
             while (this.renderer.IsRunning())
             {
                 float dt = Raylib.GetFrameTime();
-                if (Raylib.IsKeyDown(KeyboardKey.Right))
+                if (Raylib.IsKeyDown(KeyboardKey.W))
                 {
-                    this.player.Move(this.map, 1, 0, dt);
+                    this.player.Move(this.map, 0, dt);
                 }
+                if (Raylib.IsKeyDown(KeyboardKey.A))
+                {
+                    this.player.Move(this.map, -90, dt);
+                }
+                if (Raylib.IsKeyDown(KeyboardKey.S))
+                {
+                    this.player.Move(this.map, 180, dt);
+                }
+                if (Raylib.IsKeyDown(KeyboardKey.D))
+                {
+                    this.player.Move(this.map, 90, dt);
+                }
+
+                //////////////////////
                 if (Raylib.IsKeyDown(KeyboardKey.Left))
                 {
-                    this.player.Move(this.map, -1, 0, dt);
+                    this.player.MoveXY(this.map, -1, 0, dt);
+                }
+                if (Raylib.IsKeyDown(KeyboardKey.Right))
+                {
+                    this.player.MoveXY(this.map, 1, 0, dt);
                 }
                 if (Raylib.IsKeyDown(KeyboardKey.Up))
                 {
-                    this.player.Move(this.map, 0, -1, dt);
+                    this.player.MoveXY(this.map, 0, -1, dt);
                 }
                 if (Raylib.IsKeyDown(KeyboardKey.Down))
                 {
-                    this.player.Move(this.map, 0, 1, dt);
+                    this.player.MoveXY(this.map, 0, 1, dt);
                 }
-                
+
                 if (Raylib.IsKeyPressed(KeyboardKey.J))
                 {
                     this.player.Rotate(-15);

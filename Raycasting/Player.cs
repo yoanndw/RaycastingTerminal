@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -32,52 +33,56 @@ namespace Raycasting
             );
         }
 
-        public void MoveNoCheck(int dx, int dy)
+        public void Move(int[,] map, int angleDeg, float dt)
         {
-            this.Pos += new Vector2(dx, dy) * Constants.TILE_SIZE;
+            float angleRad = MathUtils.Deg2Rad(angleDeg + this.Angle);
+            float vx = MathF.Round(MathF.Cos(angleRad), 4);
+            float vy = MathF.Round(MathF.Sin(angleRad), 4);
+            MoveXY(map, vx, vy, dt);
         }
 
-        public void Move(int[,] map, float dx, float dy, float dt)
+        public void MoveXY(int[,] map, float vx, float vy, float dt)
         {
-            Vector2 newPos = this.Pos + new Vector2(dx, dy) * dt * this.speed;
+            Vector2 newPos = this.Pos + new Vector2(vx, vy) * dt * this.speed;
+            Debug.WriteLine($"velocity: {vx}, {vy}");
+
+            int tileX = MapUtils.PixelToTile(newPos.X);
+            int tileY = MapUtils.PixelToTile(newPos.Y);
+
+            int topTileY = MapUtils.PixelToTile(newPos.Y - this.Radius);
+            int leftTileX = MapUtils.PixelToTile(newPos.X - this.Radius);
+            int botTileY = MapUtils.PixelToTile(newPos.Y + this.Radius);
+            int rightTileX = MapUtils.PixelToTile(newPos.X + this.Radius);
             if (CollidesWall(map, newPos))
             {
-                int leftTileX = MapUtils.PixelToTile(newPos.X - this.Radius);
-                int rightTileX = MapUtils.PixelToTile(newPos.X + this.Radius);
-
-                float deltaX = 0;
-                if (dx < 0)
-                {
-                    float wallX = MapUtils.TileToPixel(leftTileX + 1);
-                    deltaX = wallX - newPos.X + this.Radius;
-                }
-                else if (dx > 0)
+                if (vx > 0)
                 {
                     float wallX = MapUtils.TileToPixel(rightTileX);
-                    deltaX = wallX - newPos.X - this.Radius;
+                    float overlapX = newPos.X + this.Radius - wallX + 1;
+                    newPos.X -= overlapX;
                 }
-
-                newPos.X += deltaX;
+                else if (vx < 0)
+                {
+                    float wallX = MapUtils.TileToPixel(tileX);
+                    float overlapX = wallX - (newPos.X - this.Radius);
+                    newPos.X += overlapX;
+                }
             }
 
             if (CollidesWall(map, newPos))
             {
-                int topTileY = MapUtils.PixelToTile(newPos.Y - this.Radius);
-                int botTileY = MapUtils.PixelToTile(newPos.Y + this.Radius);
-
-                float deltaY = 0;
-                if (dy < 0)
-                {
-                    float wallY = MapUtils.TileToPixel(topTileY + 1);
-                    deltaY = wallY - newPos.Y + this.Radius;
-                }
-                else if (dy > 0)
+                if (vy > 0)
                 {
                     float wallY = MapUtils.TileToPixel(botTileY);
-                    deltaY = wallY - newPos.Y - this.Radius;
+                    float overlapY = newPos.Y + this.Radius - wallY + 1;
+                    newPos.Y -= overlapY;
                 }
-
-                newPos.Y += deltaY;
+                else if (vy < 0)
+                {
+                    float wallY = MapUtils.TileToPixel(tileY);
+                    float overlapY = wallY - (newPos.Y - this.Radius);
+                    newPos.Y += overlapY;
+                }
             }
 
             this.Pos = newPos;
@@ -87,8 +92,8 @@ namespace Raycasting
         {
             int topTileY = MapUtils.PixelToTile(pos.Y - this.Radius);
             int leftTileX = MapUtils.PixelToTile(pos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius - 1);
-            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius - 1);
+            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius);
+            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius);
 
             return MapUtils.GetTile(map, leftTileX, topTileY) != 0
                 || MapUtils.GetTile(map, rightTileX, topTileY) != 0

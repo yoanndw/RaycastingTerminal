@@ -51,18 +51,16 @@ namespace Raycasting.Rendering
             this.player.Draw(map, 800, 0);
             DrawMap(800, 0);
 
-            Debug.WriteLine("----------------");
-            //for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
-            //{
-            //    var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-            //    //Debug.WriteLine($"--------{a}°----------");
+            for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
+            {
+                var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
+                //Debug.WriteLine($"--------{a}°----------");
 
-            //    Debug.Write($"{a}° => ");
-            //    Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
-            //    var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
-            //    r.Draw(800, 0, c);
-            //    Render3D(r, i);
-            //}
+                Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
+                var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
+                r.Draw(800, 0, c);
+                Render3D(r, i);
+            }
 
             Raylib.EndDrawing();
         }

@@ -37,17 +37,17 @@ namespace Raycasting
 
             var angleRad = playerAngleRad + Deg2Rad(angle);
 
-            Vector2 playerScrPos = player.Pos;
+            Vector2 startPos = player.Pos;
             var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
             Vector2 distanceVec =  initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
-            Vector2 rayVec = playerScrPos + distanceVec;
-            Ray ray = new Ray(playerScrPos, rayVec, player.Angle + angle, angle);
+            Vector2 rayVec = startPos + distanceVec;
+            Ray ray = new Ray(startPos, rayVec, player.Angle + angle, angle);
             ray.Draw(800, 0);
 
             while (!ray.Hit(map))
             {
                 distanceVec += distanceIncrement * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
-                ray.Dest = playerScrPos + distanceVec;
+                ray.Dest = startPos + distanceVec;
                 ray.Distance += distanceIncrement;
             }
 
@@ -77,9 +77,7 @@ namespace Raycasting
             }
             while (!ray.Hit(map));
 
-            Debug.Write($" {ray.Dest} {ray.Distance}");
             ray.CorrectDistortion();
-            Debug.WriteLine($" | After: {ray.Dest} {ray.Distance}");
             ray.RoundDistance();
 
             return ray;
