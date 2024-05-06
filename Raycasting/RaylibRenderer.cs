@@ -27,6 +27,12 @@ namespace Raycasting.Rendering
         public override void InitFrame()
         {
             Raylib.InitWindow(1200, 600, "Raycasting");
+            //Console.Clear();
+            //Console.WindowTop = 0;
+            //Console.WindowLeft = 0;
+            //Console.SetWindowSize(1, 1);
+            //Console.SetBufferSize(Constants.RESOLUTION_WIDTH + 10, Constants.RESOLUTION_HEIGHT + 10);
+            //Console.SetWindowSize(Constants.RESOLUTION_WIDTH, Constants.RESOLUTION_HEIGHT);
         }
 
         public override bool IsRunning()
@@ -41,6 +47,8 @@ namespace Raycasting.Rendering
 
         public override void Draw()
         {
+            //Console.Clear();
+
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 
@@ -69,6 +77,19 @@ namespace Raycasting.Rendering
             Raylib.EndDrawing();
         }
 
+        public override void RenderPixel(int posScrX, int posScrY, Color color)
+        {
+            int pixelWidth = 800 / Constants.RESOLUTION_WIDTH;
+            int pixelHeight = 600 / Constants.RESOLUTION_HEIGHT;
+            Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
+        }
+
+        void RenderPixelTerminal(int posScrX, int posScrY, Color color)
+        {
+            Console.SetCursorPosition(posScrX, posScrY);
+            Console.Write('#');
+        }
+
         void Render3D(Ray ray, int nearPlaneX)
         {
             if (ray.Distance <= Constants.FAR_PLANE_DIST)
@@ -80,14 +101,23 @@ namespace Raycasting.Rendering
                 // Color
                 int posTexX = ray.HitTextureX(this.wallImage);
 
-                double height = 4 * Constants.TILE_SIZE * Constants.NEAR_PLANE_DIST / ray.Distance;
+                double height = 1.5 * Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
                 for (int y = 0; y < height; y++)
                 {
                     int posTexY = ray.HitTextureY(this.wallImage, height, y);
 
                     int posScrY = (int)Math.Round((y - height / 2) * pixelHeight) + 300;
+                    int nearPlaneY = (int)Math.Round((y - height / 2) + Constants.RESOLUTION_HEIGHT / 2);
                     Color color = Raylib.GetImageColor(this.wallImage, posTexX, posTexY);
-                    Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
+                    RenderPixel(posScrX, posScrY, color);
+                    //try
+                    //{
+                    //    RenderPixelTerminal(nearPlaneX, nearPlaneY, color);
+                    //}
+                    //catch (Exception e)
+                    //{
+
+                    //}
                 }
 
             }
