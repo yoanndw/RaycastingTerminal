@@ -14,13 +14,11 @@ namespace Raycasting.Rendering
     {
         int[,] map;
         Player player;
-        int playerRadius;
 
-        public RaylibRenderer(int[,] map, Image wallImage, Player player, int playerRadius) : base(wallImage)
+        public RaylibRenderer(int[,] map, Image wallImage, Player player) : base(wallImage)
         {
             this.map = map;
             this.player = player;
-            this.playerRadius = playerRadius;
         }
 
 
@@ -50,21 +48,21 @@ namespace Raycasting.Rendering
             Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
             Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
 
-            DrawPlayer(800, 0);
+            this.player.Draw(map, 800, 0);
             DrawMap(800, 0);
 
             Debug.WriteLine("----------------");
-            for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
-            {
-                var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-                //Debug.WriteLine($"--------{a}°----------");
+            //for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
+            //{
+            //    var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
+            //    //Debug.WriteLine($"--------{a}°----------");
 
-                Debug.Write($"{a}° => ");
-                Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
-                var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
-                r.Draw(800, 0, c);
-                Render3D(r, i);
-            }
+            //    Debug.Write($"{a}° => ");
+            //    Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
+            //    var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
+            //    r.Draw(800, 0, c);
+            //    Render3D(r, i);
+            //}
 
             Raylib.EndDrawing();
         }
@@ -107,14 +105,6 @@ namespace Raycasting.Rendering
                     }
                 }
             }
-        }
-
-        void DrawPlayer(int offX, int offY)
-        {
-            Vector2 playerScrPos = this.player.ScreenPos;
-            int playerScrX = offX + (int)playerScrPos.X;
-            int playerScrY = offY + (int)playerScrPos.Y;
-            Raylib.DrawCircle(playerScrX, playerScrY, this.playerRadius, Color.Green);
         }
     }
 }

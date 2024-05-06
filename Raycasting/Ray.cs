@@ -37,7 +37,7 @@ namespace Raycasting
 
             var angleRad = playerAngleRad + Deg2Rad(angle);
 
-            Vector2 playerScrPos = player.ScreenPos;
+            Vector2 playerScrPos = player.Pos;
             var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
             Vector2 distanceVec =  initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
@@ -62,7 +62,7 @@ namespace Raycasting
 
             var angleRad = playerAngleRad + Deg2Rad(angle);
 
-            Vector2 playerScrPos = player.ScreenPos;
+            Vector2 playerScrPos = player.Pos;
             var initialDistance = (float)Constants.INITIAL_CAMERA_NEAR_PLANE_DIST;
             Vector2 distanceVec = initialDistance * new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
             Vector2 rayVec = playerScrPos + distanceVec;
