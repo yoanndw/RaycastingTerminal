@@ -11,7 +11,7 @@ namespace Raycasting
         public static int TILE_SIZE = 40;
         public static Vector2 TILE_SIZE_VEC = new Vector2(TILE_SIZE);
         public static int RESOLUTION_WIDTH = 100;
-        public static int RESOLUTION_HEIGHT = 100;
+        public static int RESOLUTION_HEIGHT = 50;
         public static int FOV_DEG = 70;
         public static double FOV_RAD = Deg2Rad(FOV_DEG);
         public static int HALF_FOV_DEG = FOV_DEG / 2;
