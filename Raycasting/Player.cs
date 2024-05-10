@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 namespace Raycasting
 {
+    enum CollisionCorner
+    {
+        TL = 0,
+        TR = 1,
+        BL = 2,
+        BR = 3,
+    }
+
     public class Player
     {
         public Vector2 Pos { get; private set; }
@@ -46,42 +54,122 @@ namespace Raycasting
             Vector2 newPos = this.Pos + new Vector2(vx, vy) * dt * this.speed;
             Debug.WriteLine($"velocity: {vx}, {vy}");
 
-            int tileX = MapUtils.PixelToTile(newPos.X);
-            int tileY = MapUtils.PixelToTile(newPos.Y);
-
             int topTileY = MapUtils.PixelToTile(newPos.Y - this.Radius);
             int leftTileX = MapUtils.PixelToTile(newPos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(newPos.Y + this.Radius);
-            int rightTileX = MapUtils.PixelToTile(newPos.X + this.Radius);
-            if (CollidesWall(map, newPos))
+            int botTileY = MapUtils.PixelToTile(newPos.Y + this.Radius - 1);
+            int rightTileX = MapUtils.PixelToTile(newPos.X + this.Radius - 1);
+
+            bool[] coll = CheckCollisions(map, newPos);
+            if (coll.All(c => c))
             {
-                if (vx > 0)
-                {
-                    float wallX = MapUtils.TileToPixel(rightTileX);
-                    float overlapX = newPos.X + this.Radius - wallX + 1;
-                    newPos.X -= overlapX;
-                }
-                else if (vx < 0)
-                {
-                    float wallX = MapUtils.TileToPixel(tileX);
-                    float overlapX = wallX - (newPos.X - this.Radius);
-                    newPos.X += overlapX;
-                }
+                newPos = Pos;
             }
 
-            if (CollidesWall(map, newPos))
+            // Two or more corner collide
+            if (coll[(int)CollisionCorner.TL] && coll[(int)CollisionCorner.BL])
             {
-                if (vy > 0)
+                float wallX = MapUtils.TileToPixel(leftTileX + 1);
+                float overlapX = newPos.X - this.Radius - wallX;
+                newPos.X -= overlapX;
+            }
+            else if (coll[(int)CollisionCorner.TR] && coll[(int)CollisionCorner.BR])
+            {
+                float wallX = MapUtils.TileToPixel(rightTileX);
+                float overlapX = newPos.X + this.Radius - wallX;
+                newPos.X -= overlapX;
+            }
+            else if (coll[(int)CollisionCorner.TL] && coll[(int)CollisionCorner.TR])
+            {
+                float wallY = MapUtils.TileToPixel(topTileY + 1);
+                float overlapY = newPos.Y - this.Radius - wallY;
+                newPos.Y -= overlapY;
+            }
+            else if (coll[(int)CollisionCorner.BL] && coll[(int)CollisionCorner.BR])
+            {
+                float wallY = MapUtils.TileToPixel(botTileY);
+                float overlapY = newPos.Y + this.Radius - wallY;
+                newPos.Y -= overlapY;
+            }
+
+            // Only one corner collides
+            if (coll[(int)CollisionCorner.TL])
+            {
+                float wallX = MapUtils.TileToPixel(leftTileX + 1);
+                float wallY = MapUtils.TileToPixel(topTileY + 1);
+                float overlapX = newPos.X - this.Radius - wallX;
+                float overlapY = newPos.Y - this.Radius - wallY;
+                if (Math.Abs(overlapX) > Math.Abs(overlapY))
                 {
-                    float wallY = MapUtils.TileToPixel(botTileY);
-                    float overlapY = newPos.Y + this.Radius - wallY + 1;
                     newPos.Y -= overlapY;
                 }
-                else if (vy < 0)
+                else if (Math.Abs(overlapX) < Math.Abs(overlapY))
                 {
-                    float wallY = MapUtils.TileToPixel(tileY);
-                    float overlapY = wallY - (newPos.Y - this.Radius);
-                    newPos.Y += overlapY;
+                    newPos.X -= overlapX;
+                }
+                else
+                {
+                    newPos.X -= overlapX;
+                    newPos.Y -= overlapY;
+                }
+            }
+            else if (coll[(int)CollisionCorner.TR])
+            {
+                float wallX = MapUtils.TileToPixel(rightTileX);
+                float wallY = MapUtils.TileToPixel(topTileY + 1);
+                float overlapX = newPos.X + this.Radius - wallX;
+                float overlapY = newPos.Y - this.Radius - wallY;
+                if (Math.Abs(overlapX) > Math.Abs(overlapY))
+                {
+                    newPos.Y -= overlapY;
+                }
+                else if (Math.Abs(overlapX) < Math.Abs(overlapY))
+                {
+                    newPos.X -= overlapX;
+                }
+                else
+                {
+                    newPos.X -= overlapX;
+                    newPos.Y -= overlapY;
+                }
+            }
+            else if (coll[(int)CollisionCorner.BL])
+            {
+                float wallX = MapUtils.TileToPixel(leftTileX + 1);
+                float wallY = MapUtils.TileToPixel(botTileY);
+                float overlapX = newPos.X - this.Radius - wallX;
+                float overlapY = newPos.Y + this.Radius - wallY;
+                if (Math.Abs(overlapX) > Math.Abs(overlapY))
+                {
+                    newPos.Y -= overlapY;
+                }
+                else if (Math.Abs(overlapX) < Math.Abs(overlapY))
+                {
+                    newPos.X -= overlapX;
+                }
+                else
+                {
+                    newPos.X -= overlapX;
+                    newPos.Y -= overlapY;
+                }
+            }
+            else if (coll[(int)CollisionCorner.BR])
+            {
+                float wallX = MapUtils.TileToPixel(rightTileX);
+                float wallY = MapUtils.TileToPixel(botTileY);
+                float overlapX = newPos.X + this.Radius - wallX;
+                float overlapY = newPos.Y + this.Radius - wallY;
+                if (Math.Abs(overlapX) > Math.Abs(overlapY))
+                {
+                    newPos.Y -= overlapY;
+                }
+                else if (Math.Abs(overlapX) < Math.Abs(overlapY))
+                {
+                    newPos.X -= overlapX;
+                }
+                else
+                {
+                    newPos.X -= overlapX;
+                    newPos.Y -= overlapY;
                 }
             }
 
@@ -99,6 +187,34 @@ namespace Raycasting
                 || MapUtils.GetTile(map, rightTileX, topTileY) != 0
                 || MapUtils.GetTile(map, leftTileX, botTileY) != 0
                 || MapUtils.GetTile(map, rightTileX, botTileY) != 0;
+        }
+
+        bool[] CheckCollisions(int[,] map, Vector2 pos)
+        {
+            int topTileY = MapUtils.PixelToTile(pos.Y - this.Radius);
+            int leftTileX = MapUtils.PixelToTile(pos.X - this.Radius);
+            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius - 1);
+            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius - 1);
+
+            bool[] res = { false, false, false, false };
+            if (MapUtils.GetTile(map, leftTileX, topTileY) != 0)
+            {
+                res[(int)CollisionCorner.TL] = true;
+            }
+            if (MapUtils.GetTile(map, rightTileX, topTileY) != 0)
+            {
+                res[(int)CollisionCorner.TR] = true;
+            }
+            if (MapUtils.GetTile(map, leftTileX, botTileY) != 0)
+            {
+                res[(int)CollisionCorner.BL] = true;
+            }
+            if (MapUtils.GetTile(map, rightTileX, botTileY) != 0)
+            {
+                res[(int)CollisionCorner.BR] = true;
+            }
+
+            return res;
         }
 
         bool CollidesWall(int[,] map)
