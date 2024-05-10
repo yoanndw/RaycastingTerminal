@@ -92,8 +92,8 @@ namespace Raycasting
         {
             int topTileY = MapUtils.PixelToTile(pos.Y - this.Radius);
             int leftTileX = MapUtils.PixelToTile(pos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius);
-            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius);
+            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius - 1);
+            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius - 1);
 
             return MapUtils.GetTile(map, leftTileX, topTileY) != 0
                 || MapUtils.GetTile(map, rightTileX, topTileY) != 0
