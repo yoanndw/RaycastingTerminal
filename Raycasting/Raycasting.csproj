@@ -15,9 +15,6 @@
     <None Update="Images\brick8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Images\monster.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Images\target16.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
