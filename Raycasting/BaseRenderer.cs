@@ -13,6 +13,7 @@ namespace Raycasting.Rendering
     public abstract class BaseRenderer
     {
         protected Image wallImage;
+        protected Texture2D monsterImage;
 
         public BaseRenderer(Image wallImage)
         {
@@ -25,9 +26,10 @@ namespace Raycasting.Rendering
         }
 
         public abstract void InitFrame();
-        public void UpdateWallImage(Image wallImage)
+        public void UpdateImages(Image wallImage, Texture2D monsterImage)
         {
             this.wallImage = wallImage;
+            this.monsterImage = monsterImage;
         }
         public abstract void CloseFrame();
         public abstract bool IsRunning();

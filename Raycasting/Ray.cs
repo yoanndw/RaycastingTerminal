@@ -22,6 +22,11 @@ namespace Raycasting
         public float AbsoluteAngleDeg { get; private set; }
         public float AngleFromPlayerDeg { get; private set; }
 
+        public int Tile { get; private set; }
+        public Vector2 TilePos { get; private set; }
+
+        public float CorrectedDistance => MathF.Round(MathF.Cos(Deg2Rad(this.AngleFromPlayerDeg)) * this.Distance);
+
         public Ray(Vector2 origin, Vector2 dest, float absoluteAngleDeg, float angleFromPlayerDeg) 
         {
             this.Origin = origin;
@@ -29,6 +34,8 @@ namespace Raycasting
             this.AbsoluteAngleDeg = absoluteAngleDeg;
             this.AngleFromPlayerDeg = angleFromPlayerDeg;
             this.Distance = Vector2.Distance(origin, dest);
+            this.Tile = 0;
+            this.TilePos = Vector2.Zero;
         }
 
         public static Ray Raycast(int[,] map, Player player, float angle, float distanceIncrement)
@@ -50,8 +57,6 @@ namespace Raycasting
                 ray.Dest = startPos + distanceVec;
                 ray.Distance += distanceIncrement;
             }
-
-            ray.CorrectDistortion();
 
             return ray;
         }
@@ -76,9 +81,6 @@ namespace Raycasting
                 ray.UpdateDest(newDest);
             }
             while (!ray.Hit(map));
-
-            ray.CorrectDistortion();
-            ray.RoundDistance();
 
             return ray;
         }
@@ -168,11 +170,6 @@ namespace Raycasting
             this.Distance = (this.Dest - this.Origin).Length();
         }
 
-        void CorrectDistortion()
-        {
-            this.Distance *= MathF.Cos(Deg2Rad(this.AngleFromPlayerDeg));
-        }
-
         void RoundDistance()
         {
             this.Distance = MathF.Round(this.Distance);
@@ -184,25 +181,77 @@ namespace Raycasting
             int tileY = MapUtils.PixelToTile(this.Dest.Y);
             if (this.Dest.X % Constants.TILE_SIZE == 0 && this.Dest.Y % Constants.TILE_SIZE == 0)
             {
-                return MapUtils.GetTile(map, tileX - 1, tileY) == 1
-                    || MapUtils.GetTile(map, tileX, tileY) == 1
-                    || MapUtils.GetTile(map, tileX, tileY - 1) == 1
-                    || MapUtils.GetTile(map, tileX - 1, tileY - 1) == 1;
+                this.Tile = MapUtils.GetTile(map, tileX - 1, tileY);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX - 1, tileY);
+                    return true;
+                }
+
+                this.Tile = MapUtils.GetTile(map, tileX, tileY);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX, tileY);
+                    return true;
+                }
+
+                this.Tile = MapUtils.GetTile(map, tileX, tileY - 1);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX, tileY - 1);
+                    return true;
+                }
+
+                this.Tile = MapUtils.GetTile(map, tileX - 1, tileY - 1);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX - 1, tileY - 1);
+                    return true;
+                }
             }
 
             if (this.Dest.X % Constants.TILE_SIZE == 0)
             {
-                return MapUtils.GetTile(map, tileX - 1, tileY) == 1
-                    || MapUtils.GetTile(map, tileX, tileY) == 1;
+                this.Tile = MapUtils.GetTile(map, tileX - 1, tileY);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX - 1, tileY);
+                    return true;
+                }
+
+                this.Tile = MapUtils.GetTile(map, tileX, tileY);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX, tileY);
+                    return true;
+                }
             }
 
             if (this.Dest.Y % Constants.TILE_SIZE == 0)
             {
-                return MapUtils.GetTile(map, tileX, tileY - 1) == 1
-                    || MapUtils.GetTile(map, tileX, tileY) == 1;
+                this.Tile = MapUtils.GetTile(map, tileX, tileY - 1);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX, tileY - 1);
+                    return true;
+                }
+
+                this.Tile = MapUtils.GetTile(map, tileX, tileY);
+                if (this.Tile != 0)
+                {
+                    this.TilePos = new Vector2(tileX, tileY);
+                    return true;
+                }
             }
 
-            return MapUtils.GetTile(map, tileX, tileY) == 1;
+            this.Tile = MapUtils.GetTile(map, tileX, tileY);
+            if (this.Tile != 0)
+            {
+                this.TilePos = new Vector2(tileX, tileY);
+                return this.Tile != 0;
+            }
+
+            return false;
         }
 
         public int BlockHit(int[,] map)

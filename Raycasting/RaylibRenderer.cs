@@ -39,70 +39,7 @@ namespace Raycasting.Rendering
 
         public override void Draw()
         {
-            Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.Black);
-
-            Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
-
-            // Sky and ground
-            Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
-            Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
-
-            this.player.Draw(map, 800, 0);
-            DrawMap(800, 0);
-
-            for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
-            {
-                var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-                //Debug.WriteLine($"--------{a}°----------");
-
-                Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
-                var c = r.Distance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
-                r.Draw(800, 0, c);
-                Render3D(r, i);
-            }
-
-            Raylib.EndDrawing();
-        }
-
-        void Render3D(Ray ray, int nearPlaneX)
-        {
-            if (ray.Distance <= Constants.FAR_PLANE_DIST)
-            {
-                int pixelWidth = 800 / Constants.RESOLUTION_WIDTH;
-                int pixelHeight = 600 / Constants.RESOLUTION_HEIGHT;
-                int posScrX = nearPlaneX * pixelWidth;
-
-                // Color
-                int posTexX = ray.HitTextureX(this.wallImage);
-
-                double height = 1.5 * Constants.RESOLUTION_HEIGHT * Constants.NEAR_PLANE_DIST / ray.Distance;
-                for (int y = 0; y < height; y++)
-                {
-                    int posTexY = ray.HitTextureY(this.wallImage, height, y);
-
-                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight, 3) + 300;
-                    Color color = Raylib.GetImageColor(this.wallImage, posTexX, posTexY);
-                    Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
-                }
-
-            }
-        }
-
-        void DrawMap(int offX, int offY)
-        {
-            Vector2 off = new Vector2(offX, offY);
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                for (int j = 0; j < map.GetLength(1); j++)
-                {
-                    int tile = map[i, j];
-                    if (tile == 1)
-                    {
-                        Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * Constants.TILE_SIZE, Constants.TILE_SIZE_VEC), 0, 0, 1, Color.Black);
-                    }
-                }
-            }
+            
         }
     }
 }
