@@ -58,6 +58,8 @@ namespace Raycasting
         {
             Raylib.InitWindow(Constants.WIN_W, Constants.WIN_H, "Raycasting");
             LoadAssets();
+            Raylib.HideCursor();
+
             while (!Raylib.WindowShouldClose())
             {
                 float dt = Raylib.GetFrameTime();
@@ -111,7 +113,7 @@ namespace Raycasting
                 }
 
                 float mouseDelta = Raylib.GetMouseDelta().X;
-                this.player.Rotate(mouseDelta * dt * Constants.ROTATION_SPEED);
+                this.player.Rotate(mouseDelta * dt * Constants.MOUSE_SENSIBILITY);
                 Vector2 mousePos = Raylib.GetMousePosition();
                 if (mousePos.X < Constants.HUD_OFF_X)
                 {

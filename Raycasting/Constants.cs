@@ -32,7 +32,7 @@ namespace Raycasting
 
         public static double STEP_ANGLE_RAD = FOV_RAD / RESOLUTION_WIDTH;
         public static double STEP_ANGLE_DEG = FOV_DEG / ((double)RESOLUTION_WIDTH);
-        public static float ROTATION_SPEED = 2f;
+        public static float MOUSE_SENSIBILITY = 25f;
 
         #region Sides
         public static int NORTH = 1;
