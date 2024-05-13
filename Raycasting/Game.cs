@@ -174,6 +174,7 @@ namespace Raycasting
                 r.Draw(HUD_OFF_X + FPS_VIEW_W, 0, c);
 
                 Render3D(r, i);
+                DrawFog(r, i);
             }
 
             DrawCursor();
@@ -189,7 +190,7 @@ namespace Raycasting
                 int pixelHeight = FPS_VIEW_W / Constants.RESOLUTION_HEIGHT;
                 int posScrX = nearPlaneX * pixelWidth;
 
-                // Color
+                // Fog
                 double brightness = ComputeCorrectedBrightness(ray);
 
                 Image image = this.images[ray.Tile - 1];
@@ -217,6 +218,16 @@ namespace Raycasting
             }
         }
 
+        void DrawFog(Ray ray, int nearPlaneX)
+        {
+            int pixelWidth = FPS_VIEW_W / Constants.RESOLUTION_WIDTH;
+            int posScrX = nearPlaneX * pixelWidth;
+
+            double fog = ComputeFogInstensity(ray);
+            Color fogColor = new Color(0, 0, 0, (int)(fog * 255));
+            Raylib.DrawRectangle(HUD_OFF_X + posScrX, 0, pixelWidth, FPS_VIEW_H, fogColor);
+        }
+
         double ComputeBrightness(Ray ray)
         {
             return MathUtils.Lerp(1, 0, FAR_PLANE_DIST, ray.Distance);
@@ -225,6 +236,12 @@ namespace Raycasting
         double ComputeCorrectedBrightness(Ray ray)
         {
             return Math.Clamp(ComputeBrightness(ray), 0, 1);
+        }
+
+        double ComputeFogInstensity(Ray ray)
+        {
+            double fog = MathUtils.Lerp(0, 1, FAR_PLANE_DIST, ray.Distance);
+            return Math.Clamp(fog, 0, 1);
         }
 
         void DrawMap(int offX, int offY)
