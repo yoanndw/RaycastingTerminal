@@ -25,6 +25,11 @@ namespace Raycasting
         public float Angle { get; private set; }
         public float Radius { get; private set; }
 
+        float LeftX(Vector2 pos) => pos.X - Radius;
+        float RightX(Vector2 pos) => pos.X + Radius;
+        float TopY(Vector2 pos) => pos.Y - Radius;
+        float BotY(Vector2 pos) => pos.Y + Radius;
+
         public Player(int tx, int ty, float radius, float speed, float angle)
         {
             SetTilePos(tx, ty);
@@ -54,10 +59,10 @@ namespace Raycasting
             Vector2 newPos = this.Pos + new Vector2(vx, vy) * dt * this.speed;
             //Debug.WriteLine($"velocity: {vx}, {vy}");
 
-            int topTileY = MapUtils.PixelToTile(newPos.Y - this.Radius);
-            int leftTileX = MapUtils.PixelToTile(newPos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(newPos.Y + this.Radius - 1);
-            int rightTileX = MapUtils.PixelToTile(newPos.X + this.Radius - 1);
+            int topTileY = MapUtils.PixelToTile(TopY(newPos));
+            int leftTileX = MapUtils.PixelToTile(LeftX(newPos));
+            int botTileY = MapUtils.PixelToTile(BotY(newPos));
+            int rightTileX = MapUtils.PixelToTile(RightX(newPos));
 
             bool[] coll = CheckCollisions(map, newPos);
             Debug.WriteLine($"Collisions: {string.Join(", ", coll)}");
@@ -183,10 +188,10 @@ namespace Raycasting
 
         bool CollidesWall(int[,] map, Vector2 pos)
         {
-            int topTileY = MapUtils.PixelToTile(pos.Y - this.Radius);
-            int leftTileX = MapUtils.PixelToTile(pos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius - 1);
-            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius - 1);
+            int topTileY = MapUtils.PixelToTile(TopY(pos));
+            int leftTileX = MapUtils.PixelToTile(LeftX(pos));
+            int botTileY = MapUtils.PixelToTile(BotY(pos));
+            int rightTileX = MapUtils.PixelToTile(RightX(pos));
 
             return MapUtils.GetTile(map, leftTileX, topTileY) != 0
                 || MapUtils.GetTile(map, rightTileX, topTileY) != 0
@@ -196,10 +201,10 @@ namespace Raycasting
 
         bool[] CheckCollisions(int[,] map, Vector2 pos)
         {
-            int topTileY = MapUtils.PixelToTile(pos.Y - this.Radius);
-            int leftTileX = MapUtils.PixelToTile(pos.X - this.Radius);
-            int botTileY = MapUtils.PixelToTile(pos.Y + this.Radius - 1);
-            int rightTileX = MapUtils.PixelToTile(pos.X + this.Radius - 1);
+            int topTileY = MapUtils.PixelToTile(TopY(pos));
+            int leftTileX = MapUtils.PixelToTile(LeftX(pos));
+            int botTileY = MapUtils.PixelToTile(BotY(pos));
+            int rightTileX = MapUtils.PixelToTile(RightX(pos));
 
             bool[] res = { false, false, false, false };
             if (MapUtils.GetTile(map, leftTileX, topTileY) != 0)
