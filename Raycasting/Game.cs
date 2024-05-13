@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Numerics;
+
+using Raycasting.Rendering;
+using static Raycasting.Constants;
 
 namespace Raycasting
 {
-    using Rendering;
-    using System.Diagnostics;
-    using System.Numerics;
 
     public class Game
     {
@@ -54,7 +56,7 @@ namespace Raycasting
 
         public void Run()
         {
-            Raylib.InitWindow(1200, 600, "Raycasting");
+            Raylib.InitWindow(Constants.WIN_W, Constants.WIN_H, "Raycasting");
             LoadAssets();
             while (!Raylib.WindowShouldClose())
             {
@@ -108,6 +110,18 @@ namespace Raycasting
                     Shoot();
                 }
 
+                float mouseDelta = Raylib.GetMouseDelta().X;
+                this.player.Rotate(mouseDelta * dt * Constants.ROTATION_SPEED);
+                Vector2 mousePos = Raylib.GetMousePosition();
+                if (mousePos.X < Constants.HUD_OFF_X)
+                {
+                    Raylib.SetMousePosition(Constants.HUD_OFF_X + Constants.FPS_VIEW_W, (int)mousePos.Y);
+                }
+                else if (mousePos.X > Constants.HUD_OFF_X + Constants.FPS_VIEW_W)
+                {
+                    Raylib.SetMousePosition(Constants.HUD_OFF_X, (int)mousePos.Y);
+                }
+
                 Draw();
             }
 
@@ -126,19 +140,28 @@ namespace Raycasting
             }
         }
 
+        void DrawCursor()
+        {
+            int length = 30;
+            int width = 5;
+
+            Raylib.DrawRectangle(HUD_OFF_X + (FPS_VIEW_W - length) / 2, (FPS_VIEW_H - width) / 2, length, width, Color.White);
+            Raylib.DrawRectangle(HUD_OFF_X + (FPS_VIEW_W - width) / 2, (FPS_VIEW_H - length) / 2, width, length, Color.White);
+        }
+
         void Draw()
         {
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 
-            Raylib.DrawRectangle(800, 0, 400, 600, Color.White);
+            Raylib.DrawRectangle(HUD_OFF_X + FPS_VIEW_W, 0, HUD_OFF_X, WIN_H, Color.White);
 
             // Sky and ground
-            Raylib.DrawRectangle(0, 0, 800, 300, Color.SkyBlue);
-            Raylib.DrawRectangle(0, 300, 800, 300, Color.Brown);
+            Raylib.DrawRectangle(HUD_OFF_X, 0, FPS_VIEW_W, FPS_VIEW_H / 2, Color.SkyBlue);
+            Raylib.DrawRectangle(HUD_OFF_X, FPS_VIEW_H / 2, FPS_VIEW_W, FPS_VIEW_H / 2, Color.Brown);
 
-            this.player.Draw(map, 800, 0);
-            DrawMap(800, 0);
+            this.player.Draw(map, HUD_OFF_X + FPS_VIEW_W, 0);
+            DrawMap(HUD_OFF_X + FPS_VIEW_W, 0);
 
             for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
             {
@@ -147,10 +170,12 @@ namespace Raycasting
 
                 Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
                 var c = r.CorrectedDistance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
-                r.Draw(800, 0, c);
+                r.Draw(HUD_OFF_X + FPS_VIEW_W, 0, c);
 
                 Render3D(r, i);
             }
+
+            DrawCursor();
 
             Raylib.EndDrawing();
         }
@@ -159,8 +184,8 @@ namespace Raycasting
         {
             if (ray.CorrectedDistance <= Constants.FAR_PLANE_DIST)
             {
-                int pixelWidth = 800 / Constants.RESOLUTION_WIDTH;
-                int pixelHeight = 600 / Constants.RESOLUTION_HEIGHT;
+                int pixelWidth = FPS_VIEW_W / Constants.RESOLUTION_WIDTH;
+                int pixelHeight = FPS_VIEW_W / Constants.RESOLUTION_HEIGHT;
                 int posScrX = nearPlaneX * pixelWidth;
 
                 // Color
@@ -172,9 +197,9 @@ namespace Raycasting
                 {
                     int posTexY = ray.HitTextureY(image, height, y);
 
-                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight, 3) + 300;
+                    int posScrY = (int)Math.Round((y - height / 2) * pixelHeight, 3) + FPS_VIEW_H / 2;
                     Color color = Raylib.GetImageColor(image, posTexX, posTexY);
-                    Raylib.DrawRectangle(posScrX, posScrY, pixelWidth, pixelHeight, color);
+                    Raylib.DrawRectangle(HUD_OFF_X + posScrX, posScrY, pixelWidth, pixelHeight, color);
                 }
 
             }
@@ -188,7 +213,7 @@ namespace Raycasting
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
                     int tile = map[i, j];
-                    if (tile == 1)
+                    if (tile != 0)
                     {
                         Raylib.DrawRectangleRoundedLines(new Rectangle(off + new Vector2(j, i) * Constants.TILE_SIZE, Constants.TILE_SIZE_VEC), 0, 0, 1, Color.Black);
                     }

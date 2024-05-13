@@ -8,6 +8,13 @@ namespace Raycasting
 {
     internal class Constants
     {
+        public static int FPS_VIEW_W = 800;
+        public static int FPS_VIEW_H = 600;
+        public static int HUD_W = 800;
+        public static int HUD_OFF_X = HUD_W / 2;
+        public static int WIN_W = FPS_VIEW_W + HUD_W;
+        public static int WIN_H = FPS_VIEW_H;
+
         public static int TILE_SIZE = 40;
         public static Vector2 TILE_SIZE_VEC = new Vector2(TILE_SIZE);
         public static int RESOLUTION_WIDTH = 400;
@@ -25,6 +32,7 @@ namespace Raycasting
 
         public static double STEP_ANGLE_RAD = FOV_RAD / RESOLUTION_WIDTH;
         public static double STEP_ANGLE_DEG = FOV_DEG / ((double)RESOLUTION_WIDTH);
+        public static float ROTATION_SPEED = 2f;
 
         #region Sides
         public static int NORTH = 1;
