@@ -174,9 +174,9 @@ namespace Raycasting
                 r.Draw(HUD_OFF_X + FPS_VIEW_W, 0, c);
 
                 Render3D(r, i);
-                DrawFog(r, i);
             }
 
+            DrawFog();
             DrawCursor();
 
             Raylib.EndDrawing();
@@ -218,14 +218,22 @@ namespace Raycasting
             }
         }
 
-        void DrawFog(Ray ray, int nearPlaneX)
+        void DrawFog()
         {
-            int pixelWidth = FPS_VIEW_W / Constants.RESOLUTION_WIDTH;
-            int posScrX = nearPlaneX * pixelWidth;
+            int pixelW = FPS_VIEW_W / RESOLUTION_WIDTH;
+            int pixelH = FPS_VIEW_W / RESOLUTION_HEIGHT;
 
-            double fog = ComputeFogInstensity(ray);
-            Color fogColor = new Color(0, 0, 0, (int)(fog * 255));
-            Raylib.DrawRectangle(HUD_OFF_X + posScrX, 0, pixelWidth, FPS_VIEW_H, fogColor);
+            int centerX = RESOLUTION_WIDTH / 2;
+            int centerY = RESOLUTION_HEIGHT / 2;
+            for (int y = 0; y < RESOLUTION_HEIGHT; y++)
+            {
+                for (int x = 0; x < RESOLUTION_WIDTH; x++)
+                {
+                    float distanceFromCenter = new Vector2(x - centerX, y - centerY).Length();
+                    int opacity = (int)(ComputeFogInstensity(distanceFromCenter) * 255);
+                    Raylib.DrawRectangle(HUD_OFF_X + x * pixelW, y * pixelH, pixelW, pixelH, new Color(0, 0, 0, opacity));
+                }
+            }
         }
 
         double ComputeBrightness(Ray ray)
@@ -238,9 +246,19 @@ namespace Raycasting
             return Math.Clamp(ComputeBrightness(ray), 0, 1);
         }
 
-        double ComputeFogInstensity(Ray ray)
+        double ComputeFogInstensity(float distance)
         {
-            double fog = MathUtils.Lerp(0, 1, FAR_PLANE_DIST, ray.Distance);
+            if (distance > MAX_FOG_RADIUS)
+            {
+                return 1;
+            }
+
+            if (distance < MIN_FOG_RADIUS)
+            {
+                return 0;
+            }
+
+            double fog = MathUtils.Lerp(0, 1, MAX_FOG_RADIUS - MIN_FOG_RADIUS, distance - MIN_FOG_RADIUS);
             return Math.Clamp(fog, 0, 1);
         }
 

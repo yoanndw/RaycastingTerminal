@@ -34,6 +34,9 @@ namespace Raycasting
         public static double STEP_ANGLE_DEG = FOV_DEG / ((double)RESOLUTION_WIDTH);
         public static float MOUSE_SENSIBILITY = 25f;
 
+        public static double MAX_FOG_RADIUS = RESOLUTION_WIDTH / 2;
+        public static double MIN_FOG_RADIUS = MAX_FOG_RADIUS * 0.1;
+
         #region Sides
         public static int NORTH = 1;
         public static int EAST = 2;
