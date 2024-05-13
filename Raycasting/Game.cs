@@ -159,8 +159,9 @@ namespace Raycasting
             Raylib.DrawRectangle(HUD_OFF_X + FPS_VIEW_W, 0, HUD_OFF_X, WIN_H, Color.White);
 
             // Sky and ground
-            Raylib.DrawRectangle(HUD_OFF_X, 0, FPS_VIEW_W, FPS_VIEW_H / 2, Color.SkyBlue);
-            Raylib.DrawRectangle(HUD_OFF_X, FPS_VIEW_H / 2, FPS_VIEW_W, FPS_VIEW_H / 2, Color.Brown);
+            //Raylib.DrawRectangle(HUD_OFF_X, 0, FPS_VIEW_W, FPS_VIEW_H / 2, Color.SkyBlue);
+            //Raylib.DrawRectangle(HUD_OFF_X, FPS_VIEW_H / 2, FPS_VIEW_W, FPS_VIEW_H / 2, Color.DarkGray);
+            DrawGround(FPS_VIEW_H / 2);
 
             this.player.Draw(map, HUD_OFF_X + FPS_VIEW_W, 0);
             DrawMap(HUD_OFF_X + FPS_VIEW_W, 0);
@@ -180,6 +181,12 @@ namespace Raycasting
             DrawCursor();
 
             Raylib.EndDrawing();
+        }
+
+        void DrawGround(int offY)
+        {
+            int height = FPS_VIEW_H - offY;
+            Raylib.DrawRectangleGradientV(HUD_OFF_X, offY, FPS_VIEW_W, height, Color.Black, Color.DarkGray);
         }
 
         void Render3D(Ray ray, int nearPlaneX)
