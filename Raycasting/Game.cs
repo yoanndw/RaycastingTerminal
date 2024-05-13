@@ -10,6 +10,7 @@ using System.Numerics;
 
 using Raycasting.Rendering;
 using static Raycasting.Constants;
+using Microsoft.VisualBasic;
 
 namespace Raycasting
 {
@@ -133,7 +134,6 @@ namespace Raycasting
         void Shoot()
         {
             Ray r = Ray.OptimisedRaycast(this.map, this.player, 0);
-            Debug.WriteLine($"{r.Tile}");
             if (r.Tile == 2)
             {
                 int tileX = (int)r.TilePos.X;
@@ -168,7 +168,6 @@ namespace Raycasting
             for (int i = 0; i < Constants.RESOLUTION_WIDTH; i++)
             {
                 var a = (i - Constants.RESOLUTION_WIDTH / 2) * Constants.STEP_ANGLE_DEG;
-                //Debug.WriteLine($"--------{a}°----------");
 
                 Ray r = Ray.OptimisedRaycast(this.map, this.player, (float)a);
                 var c = r.CorrectedDistance <= Constants.FAR_PLANE_DIST ? Color.Green : Color.Red;
@@ -191,6 +190,8 @@ namespace Raycasting
                 int posScrX = nearPlaneX * pixelWidth;
 
                 // Color
+                double brightness = ComputeCorrectedBrightness(ray);
+
                 Image image = this.images[ray.Tile - 1];
                 int posTexX = ray.HitTextureX(image);
 
@@ -201,10 +202,29 @@ namespace Raycasting
 
                     int posScrY = (int)Math.Round((y - height / 2) * pixelHeight, 3) + FPS_VIEW_H / 2;
                     Color color = Raylib.GetImageColor(image, posTexX, posTexY);
+                    color.R = (byte)(color.R * brightness);
+                    color.G = (byte)(color.G * brightness);
+                    color.B = (byte)(color.B * brightness);
+
+                    if (y == 0)
+                    {
+                        Debug.WriteLine($"Bright: {brightness}, RGB: {color}");
+                    }
+
                     Raylib.DrawRectangle(HUD_OFF_X + posScrX, posScrY, pixelWidth, pixelHeight, color);
                 }
 
             }
+        }
+
+        double ComputeBrightness(Ray ray)
+        {
+            return MathUtils.Lerp(1, 0, FAR_PLANE_DIST, ray.Distance);
+        }
+
+        double ComputeCorrectedBrightness(Ray ray)
+        {
+            return Math.Clamp(ComputeBrightness(ray), 0, 1);
         }
 
         void DrawMap(int offX, int offY)

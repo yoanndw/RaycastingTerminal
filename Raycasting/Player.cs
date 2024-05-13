@@ -65,7 +65,6 @@ namespace Raycasting
             int rightTileX = MapUtils.PixelToTile(RightX(newPos));
 
             bool[] coll = CheckCollisions(map, newPos);
-            Debug.WriteLine($"Collisions: {string.Join(", ", coll)}");
             if (coll.All(c => c))
             {
                 newPos = Pos;
